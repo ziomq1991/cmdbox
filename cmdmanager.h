@@ -11,7 +11,7 @@ class CmdManager : public QThread
 {
     Q_OBJECT
 private:            
-    const QString NSF;
+    QString nsf;
     QFile *nameSortedFile;
     QList<Cmd> *cmdList;
     QList<Cmd> *nsList;

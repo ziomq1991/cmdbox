@@ -7,12 +7,16 @@
 #include <QKeyEvent>
 
 CmdBox::CmdBox(QWidget *parent) :
-    QDialog(parent), ui(new Ui::CmdBox), itemCount(4), selectedItem(0),
+    QDialog(parent), ui(new Ui::CmdBox), itemCount(4), selectedItem(0),iconSize(50),
     cmdManager(new CmdManager())
 {
     ui->setupUi(this);
     initList();
-    initSlotsAndSignals();    
+    initSlotsAndSignals();
+
+    getCmdList()->setMinimumHeight(iconSize*(itemCount+1) + iconSize/2);
+    setMinimumHeight(getCmdList()->height() + 80);
+    setMaximumHeight(getCmdList()->height() + 80);
 }
 
 CmdBox::~CmdBox(){
@@ -30,7 +34,7 @@ void CmdBox::initSlotsAndSignals(){
 }
 
 void CmdBox::initList(){    
-    getCmdList()->setIconSize(QSize(50, 50));
+    getCmdList()->setIconSize(QSize(iconSize, iconSize));
 
     for(int i=0; i<getItemCount(); ++i){
         QListWidgetItem *item = new QListWidgetItem("", getCmdList());
@@ -38,7 +42,7 @@ void CmdBox::initList(){
         item->setData(Qt::UserRole, i);
     }
     QListWidgetItem *item = new QListWidgetItem("", getCmdList());
-    item->setIcon(QIcon::fromTheme("dialog-warning"));
+    item->setIcon(QIcon::fromTheme("system-run"));
     item->setData(Qt::UserRole, getItemCount());
 
     getCmdList()->item(0)->setSelected(true);    
@@ -93,6 +97,18 @@ void CmdBox::keyPressEvent(QKeyEvent *event){
     return QDialog::keyPressEvent(event);
 }
 
+QIcon CmdBox::getIconFromCmd(QString cmd){
+    QString s = cmd.split(" ", QString::SkipEmptyParts).at(0);
+
+    if(s.compare("google-chrome") == 0){
+        return QIcon::fromTheme("applications-internet");
+    }
+    if(s.compare("nautilus") == 0){
+        return QIcon::fromTheme("folder");
+    }
+    return QIcon::fromTheme("media-playback-start");
+}
+
 void CmdBox::updateLastItem(QString str){
     getItem(getItemCount())->setText(str);
 }
@@ -105,5 +121,6 @@ void CmdBox::updateList(QString txt){
     QList<Cmd> *list = cmdManager->getCmdList(getItemCount(), txt);
     for(int i=0; i<getItemCount(); ++i){
         getItem(i)->setText(list->at(i));
+        getItem(i)->setIcon(getIconFromCmd(list->at(i).getCmd()));
     }
 }

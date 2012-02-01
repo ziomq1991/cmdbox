@@ -14,7 +14,7 @@ public:
 
     static int exec(const QString& cmd);    
     int exec();
-    
+    inline QString getCmd()const{ return cmd; }
 };
 
 #endif // CMD_H

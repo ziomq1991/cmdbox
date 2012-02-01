@@ -21,7 +21,8 @@ private:
     Ui::CmdBox *ui;
     int itemCount;
     int selectedItem;
-    CmdManager *cmdManager;
+    int iconSize;
+    CmdManager *cmdManager;    
 
 public:
     explicit CmdBox(QWidget *parent = 0);
@@ -31,6 +32,7 @@ protected:
     void initSlotsAndSignals();
     void initList();    
     void keyPressEvent(QKeyEvent * event);
+    QIcon getIconFromCmd(QString cmd);
 
 
     inline void setItemCount(int count){ itemCount = count; }

@@ -6,8 +6,8 @@
 
 CmdManager::CmdManager(QObject *parent) :
     QThread(parent),
-    NSF("/home/ziomq1991/Code/cpp/cmdbox/cmdbox-build-desktop-Desktop_Qt_4_7_4_for_GCC__Qt_SDK__Release/nsf.cmd"),
-    nameSortedFile(new QFile(NSF)),
+    nsf("/home/ziomq1991/Code/cpp/cmdbox/cmdbox-build-desktop-Desktop_Qt_4_7_4_for_GCC__Qt_SDK__Release/nsf.cmd"),
+    nameSortedFile(new QFile(nsf)),
     cmdList(new QList<Cmd>()), nsList(new QList<Cmd>())
 {
     start();    
