@@ -8,6 +8,10 @@
 
 CmdBox::CmdBox(QWidget *parent) :
     QDialog(parent), ui(new Ui::CmdBox), itemCount(4), selectedItem(0),iconSize(50),
+    FOLDER_ICON("folder"), INTERNET_ICON("applications-internet"),
+    PLAY_ICON("media-playback-start"), RUN_ICON("system-run"),
+    WARNING_ICON("dialog-warning"),
+    DEFAULT_WEB_BROWSER("google-chrome"), DEFAULT_FOLDER_EXPLORER("nautilus"),
     cmdManager(new CmdManager())
 {
     ui->setupUi(this);
@@ -38,11 +42,11 @@ void CmdBox::initList(){
 
     for(int i=0; i<getItemCount(); ++i){
         QListWidgetItem *item = new QListWidgetItem("", getCmdList());
-        item->setIcon(QIcon::fromTheme("dialog-warning"));
+        item->setIcon(QIcon::fromTheme(WARNING_ICON));
         item->setData(Qt::UserRole, i);
     }
     QListWidgetItem *item = new QListWidgetItem("", getCmdList());
-    item->setIcon(QIcon::fromTheme("system-run"));
+    item->setIcon(QIcon::fromTheme(RUN_ICON));
     item->setData(Qt::UserRole, getItemCount());
 
     getCmdList()->item(0)->setSelected(true);    
@@ -100,13 +104,13 @@ void CmdBox::keyPressEvent(QKeyEvent *event){
 QIcon CmdBox::getIconFromCmd(QString cmd){
     QString s = cmd.split(" ", QString::SkipEmptyParts).at(0);
 
-    if(s.compare("google-chrome") == 0){
-        return QIcon::fromTheme("applications-internet");
+    if(s.compare(DEFAULT_WEB_BROWSER) == 0){
+        return QIcon::fromTheme(INTERNET_ICON);
     }
-    if(s.compare("nautilus") == 0){
-        return QIcon::fromTheme("folder");
+    if(s.compare(DEFAULT_FOLDER_EXPLORER) == 0){
+        return QIcon::fromTheme(FOLDER_ICON);
     }
-    return QIcon::fromTheme("media-playback-start");
+    return QIcon::fromTheme(PLAY_ICON);
 }
 
 void CmdBox::updateLastItem(QString str){
@@ -119,7 +123,7 @@ void CmdBox::execCommand(){
 
 void CmdBox::updateList(QString txt){
     QList<Cmd> *list = cmdManager->getCmdList(getItemCount(), txt);
-    for(int i=0; i<getItemCount(); ++i){
+    for(int i=0; i<getItemCount() && i<list->count(); ++i){
         getItem(i)->setText(list->at(i));
         getItem(i)->setIcon(getIconFromCmd(list->at(i).getCmd()));
     }

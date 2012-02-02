@@ -22,9 +22,17 @@ private:
     int itemCount;
     int selectedItem;
     int iconSize;
+    const QString FOLDER_ICON;
+    const QString INTERNET_ICON;
+    const QString PLAY_ICON;
+    const QString RUN_ICON;
+    const QString WARNING_ICON;    
+    const QString DEFAULT_WEB_BROWSER;
+    const QString DEFAULT_FOLDER_EXPLORER;
     CmdManager *cmdManager;    
 
-public:
+public:    
+
     explicit CmdBox(QWidget *parent = 0);
     ~CmdBox();
 
@@ -35,7 +43,6 @@ protected:
     QIcon getIconFromCmd(QString cmd);
 
 
-    inline void setItemCount(int count){ itemCount = count; }
     inline void changeSelectedItem(int change){ selectedItem += change; }
     inline void setSelectedItem(int selected){ selectedItem = selected; }
 

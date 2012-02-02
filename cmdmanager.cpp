@@ -6,11 +6,12 @@
 
 CmdManager::CmdManager(QObject *parent) :
     QThread(parent),
-    nsf("/home/ziomq1991/Code/cpp/cmdbox/cmdbox-build-desktop-Desktop_Qt_4_7_4_for_GCC__Qt_SDK__Release/nsf.cmd"),
-    nameSortedFile(new QFile(nsf)),
+    NSF("cmdbox.list"), SEPARATOR("##"), CMDBOXLIST("cmdbox-list"),
+    DEFAULT_TEXT_EDITOR("gedit"),
+    nameSortedFile(new QFile(NSF)),
     cmdList(new QList<Cmd>()), nsList(new QList<Cmd>())
 {
-    start();    
+    start();        
 }
 
 CmdManager::~CmdManager(){
@@ -30,8 +31,6 @@ QList<Cmd> *CmdManager::getCmdList(int count, QString key){
     for(int i=0; i<count; ++i)    {
         if(i < listSize){
             cmdList->append(nsList->at((k+i)%nsList->count()));
-        }else{
-            cmdList->append(Cmd(""));
         }
     }
     return cmdList;
@@ -46,12 +45,11 @@ void CmdManager::execCommand(int index, QString cmd){
 }
 
 void CmdManager::loadFiles(){
+    QString line, cmd;
     if(nameSortedFile->open(QFile::ReadOnly)){
         QTextStream nsfStream(nameSortedFile);
-        QString line, cmd;
-
         while(!(line = nsfStream.readLine()).isEmpty()){
-            QStringList tempList = line.split("##");
+            QStringList tempList = line.split(SEPARATOR);
             if(tempList.count() > 1){
                 line = tempList.at(0);
                 cmd = tempList.at(1);
@@ -61,7 +59,12 @@ void CmdManager::loadFiles(){
             }
         }
     }else{
-        nameSortedFile->open(QFile::WriteOnly);
+        nameSortedFile->open(QIODevice::WriteOnly | QIODevice::Text);
+        QTextStream nsfStream(nameSortedFile);
+        line = CMDBOXLIST;
+        cmd = DEFAULT_TEXT_EDITOR + " \"" + NSF + "\"";
+        nsfStream<< line <<" "<<SEPARATOR<<" "<< cmd;
+        nsList->append(Cmd(line, cmd));
     }
     nameSortedFile->close();
 }
